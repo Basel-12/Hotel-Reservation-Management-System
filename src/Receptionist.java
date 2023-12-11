@@ -1,125 +1,259 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Receptionist extends Person{
-    public Receptionist(String[]values){
-        super.setName(values[0]);
-        super.setEmail(values[1]);
-        super.setPhone(values[2]);
-        super.setAddress(values[3]);
-        super.setSSnn(values[4]);
-    }
-    private static File file=null;
-    public  void add_Employee(Employee employee){
-       file= new File("D:\\Pl2\\Project\\Hotel Reservation Management System\\TXT files\\Employees.txt");
-        try (FileWriter writer= new FileWriter(file,true);){
-            writer.write(employee.getName()+","); // 0
-            writer.write(employee.getSSnn()+",");  // 1
-            writer.write(employee.getEmail()+","); //2
-            writer.write(employee.getPhone()+",");  //3
-            writer.write(employee.getAddress()); //4
-            writer.write("\n");
-        } catch (IOException e) {
-            System.out.println("can't deal with this file");
-        }
-
-    }
-
-    public  boolean delete_Employee(String name){
-
-
-        File db = new File("D:\\Pl2\\Project\\Hotel Reservation Management System\\TXT files\\Employees.txt");
-        if(db.length()<=0){
-            System.out.println("No Employees exist");
-            return false;
-        }
-        File tempDB = new File("D:\\Pl2\\Project\\Hotel Reservation Management System\\TXT files\\temp.txt");
-        String record;
-   try(BufferedReader br = new BufferedReader( new FileReader(db) );
-        BufferedWriter bw = new BufferedWriter( new FileWriter( tempDB ) )){
-
-       tempDB.createNewFile();
-       while( ( record = br.readLine() ) != null ) {
-           if( record.contains(name) )
-               continue;
-
-           bw.write(record);
-           bw.flush();
-           bw.newLine();
-       }
-
-       br.close();
-       bw.close();
-       db.delete();
-       tempDB.renameTo(db);
-
-   } catch (IOException e) {
-      System.out.println("can't deal with this file");
-      return false;
+   Receptionist(){
+       super();
    }
-   return true;
-}
-    public  void add_Room(Room room){
-        // one line in file contains room info and next of contains its services
-     file=new File("D:\\Pl2\\Project\\Hotel Reservation Management System\\TXT files\\Rooms.txt");
-     try(FileWriter writer= new FileWriter(file,true)){
-         writer.write(room.getNo()+","); // 0
-         writer.write(room.getPrice()+",");  // 1
-         if(room.isAvaliable()) {
-             writer.write("status : Available" + ","); //2
-         }
-         writer.write("\n");
-         for(Service service: room.getServices()) {
-             writer.write(service.getName() + ",");
-         }
+   Receptionist(int SSnn , String name , String email, String phone, String Address)
+   {
+       super(SSnn,name,email,phone,Address);
+   }
 
-         writer.write("\n");
-     }catch(IOException e){
-         System.out.println("can't deal with this file");
-     }
-
-    }
-    public  boolean delete_Room(String Room_NO){
-        File db = new File("D:\\Pl2\\Project\\Hotel Reservation Management System\\TXT files\\Rooms.txt");
-        if(db.length()<=0){
-            System.out.println("No Rooms exist");
+   public  boolean addEmployee (Employee E) // add employee by employee object in file
+   {
+        try {
+            File file = new File("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Employees.txt");
+            if (!file.exists())
+                throw new IOException("File not exists");
+            FileWriter fw = new FileWriter(file,true);
+            PrintWriter pw = new PrintWriter(fw);
+            pw.print(E.getSSnn() + ", ");
+            pw.print(E.getName() + ", ");
+            pw.print(E.getEmail() + ", ");
+            pw.print(E.getPhone() + ", ");
+            pw.print(E.getAddress() + ", ");
+            pw.print(E.getPosition() + ", ");
+            pw.println(E.getSalary());
+            pw.flush();
+            pw.close();
+        }
+        catch (Exception X){
+            System.out.println(X.getMessage());
             return false;
         }
-        File tempDB = new File("D:\\Pl2\\Project\\Hotel Reservation Management System\\TXT files\\temp.txt");
-        String record;
-        try(BufferedReader br = new BufferedReader( new FileReader(db) );
-            BufferedWriter bw = new BufferedWriter( new FileWriter( tempDB ) )){
+       return true;
+   }
 
-            tempDB.createNewFile();
-            while( ( record = br.readLine() ) != null ) {
-                if( record.contains(Room_NO) ) {
-                    record = br.readLine();  // to read services line
-                    continue;
-                }
-                bw.write(record);
-                bw.flush();
-                bw.newLine();
+   public boolean deleteEmployee(Employee E){
+
+       try {
+           File file = new File("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Employees.txt");
+           if (!file.exists())
+               throw new IOException("File not exists");
+           if (file.length() == 0)
+               throw new IOException("File Empty");
+           ArrayList<String> data = readData(file);
+           for (int i = 0; i < data.size() ; i++) {
+               String [] values = data.get(i).split(",",2);
+               if (values[0].equals(E.getSSnn() + ""))
+                   data.remove(i);
+           }
+           writetoFile(file,data);
+       }
+       catch (Exception X){
+           System.out.println(X.getMessage());
+           return false;
+       }
+       return  true;
+   }  // delete employee data
+
+    private ArrayList<String> readData(File f) {
+        ArrayList<String> data = new ArrayList<>();
+        try {
+            File file = f;
+            if (!file.exists())
+                throw new IOException("File not exists");
+            Scanner read = new Scanner(file);
+            String line;
+            while (read.hasNextLine()) {
+                line = read.nextLine();
+                data.add(line);
             }
+            read.close();
+        } catch (Exception X) {
+            System.out.println(X.getMessage());
+        }
+        return data;
+    }   // readdata from file
+    private ArrayList<String> readData(String str) {
+        ArrayList<String> data = new ArrayList<>();
+       try {
+            File file = new File(str);
+            if (!file.exists())
+                throw new IOException("File not exists");
+            Scanner read = new Scanner(file);
+            String line;
+            while (read.hasNextLine()) {
+                line = read.nextLine();
+                data.add(line);
+            }
+            read.close();
+        } catch (Exception X) {
+            System.out.println(X.getMessage());
+        }
+        return data;
+    }
 
-            br.close();
-            bw.close();
-            db.delete();
-            tempDB.renameTo(db);
+    private void writetoFile(File f,ArrayList<String> ar) // write data to a file
+    {
+        try {
+            File file = f;
+            if (!file.exists())
+                throw new IOException("File not exists");
+            PrintWriter pw = new PrintWriter(file);
+            for(String c : ar)
+                pw.println(c);
+            pw.close();
+        }
+        catch (Exception X){
+            System.out.println(X.getMessage());
+        }
+    }
 
-        } catch (IOException e) {
-            System.out.println("can't deal with this file");
+    private void writetoFile(String str,ArrayList<String> ar)
+    {
+        try {
+            File file = new File(str);
+            if (!file.exists())
+                throw new IOException("File not exists");
+            PrintWriter pw = new PrintWriter(file);
+            for(String c : ar)
+                pw.println(c);
+            pw.close();
+        }
+        catch (Exception X){
+            System.out.println(X.getMessage());
+        }
+    }
+
+    public boolean addRoom(Room room){
+       try {
+           File file = new File("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Rooms.txt");
+           if (!file.exists())
+               throw new IOException("File not Exists");
+           FileWriter fw = new FileWriter(file,true);
+           PrintWriter pw = new PrintWriter(fw);
+           pw.print(room.getNo() + ", ");
+           pw.print(room.isAvaliable() + ", ");
+           pw.print(room.getPrice() + ", ");
+           for (int i = 0; i < room.getServices().length ; i++) {
+               pw.print(room.getServices()[i] + ", ");
+           }
+       }
+       catch (Exception X){
+           System.out.println(X.getMessage());
+           return false;
+       }
+       return true;
+    }
+
+    public boolean deleteRoom(Room room){
+        try {
+            File file = new File("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Rooms.txt");
+            if (!file.exists())
+                throw new IOException("File not Exists");
+            ArrayList<String> data = readData(file);
+
+            for (int i = 0; i <data.size() ; i++) {
+                String [] values = data.get(i).split(",",2);
+                if (values[0].equals(room.getNo() + ""))
+                    data.remove(i);
+            }
+            writetoFile(file,data);
+        }
+        catch (Exception X){
+            System.out.println(X.getMessage());
             return false;
         }
         return true;
     }
-    public  void add_Guest(Guest guest){
-       file= new File("Guest.txt");
 
+
+    public boolean addGuest(Guest g){
+        try {
+            File file = new File("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Guest.txt");
+            if (!file.exists())
+                throw new IOException("File not Exists");
+            FileWriter fw = new FileWriter(file,true);
+            PrintWriter pw = new PrintWriter(fw);
+            pw.print(g.getSSnn() + ", ");
+            pw.print(g.getName() + ", ");
+            pw.print(g.getEmail() + ", ");
+            pw.print(g.getPhone()+ ", ");
+            pw.println(g.getAddress());
+            pw.flush();
+            pw.close();
+        }
+        catch (Exception X){
+            System.out.println(X.getMessage());
+            return false;
+        }
+        return true;
     }
 
-    public  void delete_Guest(Guest guest){
-        file=new File("Guest.txt");
-
+    public  boolean deleteGuest(Guest g){
+        try {
+            File file = new File("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Guest.txt");
+            if (!file.exists())
+                throw new IOException("File not Exists");
+            ArrayList<String> data = readData(file);
+            for (int i = 0; i <data.size() ; i++) {
+                String[] values = data.get(i).split(",",2);
+                if (values[0].equals(g.getSSnn() + ""))
+                    data.remove(i);
+            }
+            writetoFile(file,data);
+        }
+        catch (Exception X) {
+            System.out.println(X.getMessage());
+            return false;
+        }
+       return true;
     }
 
+    public boolean addService(Service s){
+       try {
+           File file = new File("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Services.txt");
+           if (!file.exists())
+               throw new IOException("File not Exists");
+           FileWriter fw = new FileWriter(file,true);
+           PrintWriter pw = new PrintWriter(fw);
+           pw.print(s.getId() + ", ");
+           pw.print(s.getName() + ", ");
+           pw.print(s.getStatus() + ", ");
+           pw.println(s.getPrice());
+           pw.flush();
+           pw.close();
+       }
+       catch (Exception X){
+           System.out.println(X.getMessage());
+           return false;
+       }
+        return true;
+    }
+
+    public boolean deleteService(Service s){
+        try {
+            File file = new File("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Services.txt");
+            if (!file.exists())
+                throw new IOException("File not Exists");
+            ArrayList<String> data = readData(file);
+            for (int i = 0; i < data.size(); i++) {
+                String [] values = data.get(i).split(",",2);
+                if (values[0].equals(s.getId() + ""))
+                    data.remove(i);
+            }
+            writetoFile(file,data);
+        }
+        catch (Exception X){
+            System.out.println(X.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    
 }
 
