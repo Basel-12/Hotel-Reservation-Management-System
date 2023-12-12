@@ -1,5 +1,5 @@
 public class Guest extends Person{
-    private static int noGuests = 0;
+    private static int noGuests = FileHandler.nousers("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Guest.txt");
     Guest(){
         ++noGuests;
     }

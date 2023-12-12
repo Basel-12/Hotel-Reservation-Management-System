@@ -1,0 +1,4 @@
+1, true, 1500.0, pool, Spa, Sauna, 
+3, true, 1800.0, pool, Spa, Sauna, 
+4, true, 1800.0, pool, Spa, Sauna,
+5, true, 1800.0, pool, Spa, Sauna,

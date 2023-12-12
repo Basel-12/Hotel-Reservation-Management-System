@@ -1,5 +1,4 @@
-public class Room {
-    private  static int counter = 0;
+public class Room { private  static int counter = FileHandler.nousers("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Rooms.txt");;
    private int No = 0;
    private boolean status;
    private double price;

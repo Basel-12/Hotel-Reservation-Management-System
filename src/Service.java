@@ -1,5 +1,5 @@
 public class Service {
-    private static int noServices = 0;
+    private static int noServices = FileHandler.nousers("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Services.txt");;
     public Service(){}
     public Service(String name,boolean status, double price){
         this.name=name;

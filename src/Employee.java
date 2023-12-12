@@ -1,5 +1,5 @@
 public class Employee extends Person {
-    private static int noEmployees = 0;
+    private static int noEmployees = FileHandler.nousers("C:\\Users\\user\\Documents\\Hotel-Reservation-Management-System\\TXT files\\Employees.txt");
     private String position;
     private double salary;
 
