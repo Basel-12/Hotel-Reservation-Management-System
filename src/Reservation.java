@@ -7,7 +7,15 @@ public class Reservation {
     private int guestId;
     private boolean status;
     Reservation(){
-
+        reservationId++;
     }
-    Reservation()
+    Reservation(Date checkOut,int roomId,int guestId,boolean status){
+        reservationId++;
+        checkIN = new Date();
+        this.checkOut = checkOut;
+        this.roomId = roomId;
+        this.guestId = guestId;
+        this.status = status;
+    }
+    
 }
